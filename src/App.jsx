@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { Home } from "lucide-react";
 import HomePage from "./pages/HomePage";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
       </Routes>
+      <Footer />
     </div>
   );
 };
