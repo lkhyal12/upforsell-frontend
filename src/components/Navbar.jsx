@@ -1,8 +1,8 @@
-import { Search, ShoppingBag, ShoppingCart, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Search, ShoppingCart, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/logo.png";
-import useAuthStore from "../store/authStore";
+import useAuthStore from "../store/useAuthStore";
 const Navbar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -13,6 +13,7 @@ const Navbar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
     <div className="">
       {windowWidth >= 1024 ? <DeskTopNav /> : <MobileNav />}
@@ -20,13 +21,25 @@ const Navbar = () => {
   );
 };
 
+// desktop navbar
 function DeskTopNav() {
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { user, loading, isAdmin } = useAuthStore();
   const cart = [1];
-
+  const searchInputRef = useRef();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (searchInputRef.current && !searchInputRef.current.contains(e.target))
+        setIsSearchBarOpen(false);
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <nav className="relative  flex items-center w-full justify-between px-1 py-1 md:px-4">
       <div className="leftSide flex items-center  gap-15  grow">
@@ -55,7 +68,7 @@ function DeskTopNav() {
       </div>
 
       {/* righside */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-5">
         <button
           className="relative cursor-pointer "
           onClick={() => setIsCartOpen((prev) => !prev)}
@@ -98,9 +111,10 @@ function DeskTopNav() {
         <div className="absolute inset-0 bg-white flex items-center justify-center">
           <div>
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search..."
-              className="w-120 border border-gray-200 rounded py-1 px-2 outline-none"
+              className="w-120 border border-gray-200 bg-gray-300 rounded-lg py-1 px-2 outline-none"
             />
           </div>
 

@@ -11,7 +11,7 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
-  const loading = true;
+  const loading = false;
   // handle formData change
   function handleFormDataChange(e) {
     setFormData((prev) => ({
@@ -38,7 +38,7 @@ const SignUp = () => {
         </h2>
 
         <p className="text-gray-500 mb-5">
-          Join a growing community pf buyers and sellers it's quick and easy.
+          Join a growing community of buyers and sellers it's quick and easy.
         </p>
         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="border border-gray-200 rounded-md flex items-center gap-3 p-2">
