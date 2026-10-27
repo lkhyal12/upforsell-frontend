@@ -28,8 +28,8 @@ const HeroSection = () => {
           Shop now <ArrowRight size={18} />
         </button>
 
-        <div className="flex items-center mt-10 gap-4">
-          <div className="flex items-center gap-2 border-r-2 border-gray-200 pr-4">
+        <div className="flex items-center mt-10 gap-4 flex-wrap">
+          <div className="flex items-center gap-2 md:border-r-2 border-gray-200 pr-4">
             <div>
               <Truck className="text-emerald-500" size={35} />
             </div>
@@ -39,7 +39,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 border-r-2 border-gray-200 pr-4">
+          <div className="flex items-center gap-2 md:border-r-2 border-gray-200 pr-4">
             <div>
               <ShieldCheck className="text-emerald-500" size={35} />
             </div>

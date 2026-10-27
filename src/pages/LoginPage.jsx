@@ -1,12 +1,14 @@
 import { ArrowBigRight, ArrowRight, Lock, Mail } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
+import Loader from "../components/Loader";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { login, loading, user } = useAuthStore();
   async function handleSubmit(e) {
     e.preventDefault();
     if (!email?.trim()) return toast.error("Email is required");
@@ -14,8 +16,9 @@ const LoginPage = () => {
     if (password.length < 6)
       return toast.error("Password must be at lease 6 chars long");
 
-    console.log({ password, email });
+    login({ email, password });
   }
+  if (user) return <Navigate to="/" />;
   return (
     <div className="h-[90dvh] flex items-center justify-center px-1">
       <div className="w-xl max-w-full rounded-md shadow bg-white p-5 ">
@@ -46,8 +49,18 @@ const LoginPage = () => {
             />
           </div>
 
-          <button className="text-white bg-emerald-500 font-semibold rounded-md cursor-pointer flex items-center justify-center gap-2 py-2">
-            Log In <ArrowRight size={16} />
+          <button
+            className="text-white bg-emerald-500 font-semibold rounded-md cursor-pointer flex items-center justify-center gap-2 py-2 disabled:opacity-80 disabled:pointer-events-none"
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader size="sm" />
+            ) : (
+              <>
+                {" "}
+                Log In <ArrowRight size={16} />
+              </>
+            )}
           </button>
         </form>
 

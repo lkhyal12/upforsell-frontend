@@ -7,18 +7,27 @@ import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { Home } from "lucide-react";
 import HomePage from "./pages/HomePage";
 import Footer from "./components/Footer";
+import Browse from "./pages/Browse";
+import SingleProductPage from "./pages/SingleProductPage";
+import CartPage from "./pages/CartPage";
 
 const App = () => {
   return (
-    <div>
+    <div className="">
       <Toaster position="top-center" reverseOrder={false} />
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
-      </Routes>
+      <div className="h-fit min-h-[80dvh]">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/shop" element={<Browse />} />
+          <Route path="/products/:id" element={<SingleProductPage />} />
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </div>
+
       <Footer />
     </div>
   );

@@ -1,8 +1,9 @@
 import { ArrowRight, Lock, Mail, User } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import useAuthStore from "../store/useAuthStore";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
-  const loading = false;
+  const { user, loading, signUp } = useAuthStore();
   // handle formData change
   function handleFormDataChange(e) {
     setFormData((prev) => ({
@@ -28,8 +29,10 @@ const SignUp = () => {
       return toast.error("Password must be at least 6 charcters long");
     if (password !== confirmPassword)
       return toast.error("Passwords do not match");
-    console.log("sign up");
+    signUp(formData);
   }
+
+  if (user) return <Navigate to="/" />;
   return (
     <div className="h-[90dvh] flex items-center justify-center px-1">
       <div className="w-xl max-w-full rounded-md shadow bg-white p-5 ">

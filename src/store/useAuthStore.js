@@ -13,11 +13,14 @@ const useAuthStore = create((set) => ({
   signUp: async ({ name, email, password }) => {
     set({ loading: true });
     try {
-      const response = await api.post("/auth/register", {
-        name,
-        email,
-        password,
-      });
+      const response = await api.post(
+        "http://localhost:3000/api/auth/register",
+        {
+          name,
+          email,
+          password,
+        },
+      );
 
       set({
         user: response.data.user,
