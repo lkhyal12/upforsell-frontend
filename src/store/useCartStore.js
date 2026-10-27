@@ -39,6 +39,19 @@ const useCart = create((set) => ({
       set({ loading: false });
     }
   },
+  //   dremove from cart
+  removeFromCart: async ({ productId, guestId, userId }) => {
+    try {
+      const response = await api.delete(`/cart/${productId}`, {
+        userId,
+        guestId,
+      });
+      set({ cart: response.data.cart });
+    } catch (err) {
+      const errorMsg = getErrorMsg(err);
+      set({ error: errorMsg });
+    }
+  },
 }));
 
 export default useCart;

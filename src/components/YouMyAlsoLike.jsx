@@ -23,7 +23,7 @@ const YouMyAlsoLike = ({ category }) => {
   return (
     <div className="mt-20">
       <h3 className="text-2xl md:text-3xl font-bold mb-5">You may also like</h3>
-      <div className="w-full  grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="w-full  grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
         {categoryProducts.length > 0 &&
           categoryProducts.map((product) => (
             <ProductCard
