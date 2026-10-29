@@ -6,11 +6,13 @@ import axios from "axios";
 import { getErrorMsg } from "../lib/utils";
 import Loader from "../components/Loader";
 import ProductCard from "../components/ProductCard";
+import { SlidersHorizontal } from "lucide-react";
 const Browse = () => {
   const [products, setProducts] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openSideBar, setOpenSideBar] = useState(false);
   useEffect(() => {
     async function fetchProducts() {
       const categories = searchParams.getAll("category");
@@ -18,6 +20,7 @@ const Browse = () => {
       if (categories.length === 0) {
         try {
           const response = await axios.get("https://dummyjson.com/products");
+
           setProducts(
             response.data.products.map((product) => ({
               title: product.title,
@@ -46,6 +49,7 @@ const Browse = () => {
             );
           }),
         );
+        console.log(responses);
 
         const products = responses.flatMap((response) =>
           response.data.products.map((product) => ({
@@ -88,27 +92,37 @@ const Browse = () => {
           </div>
         </div>
       </div>
-      <div className="w-9/10 md:w-9/10 mx-auto flex gap-5">
-        <div>
-          <BrowseDesktopSideBar
-            searchParams={searchParams}
-            setSearchParams={setSearchParams}
-          />
+      {/* browse page content */}
+      <div>
+        <button
+          onClick={() => setOpenSideBar(true)}
+          className=" lg:hidden w-9/10 mx-auto cursor-pointer bg-gray-200 flex  justify-center items-center gap-1 rounded font-bold py-2 mb-8 "
+        >
+          <SlidersHorizontal /> Filters
+        </button>
+        <div className="w-9/10 md:w-9/10 mx-auto flex gap-5">
+          <div>
+            <BrowseDesktopSideBar
+              searchParams={searchParams}
+              setSearchParams={setSearchParams}
+              openSideBar={openSideBar}
+              setOpenSideBar={setOpenSideBar}
+            />
+          </div>
+          {loading ? (
+            <div className="flex-1 items-center justify-center h-[80dvh]">
+              <Loader size="lg" />
+            </div>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <div className="flex-1  grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {products.map((product, idx) => (
+                <ProductCard key={product?.id || idx} product={product} />
+              ))}
+            </div>
+          )}
         </div>
-        {loading ? (
-          <div className="flex-1 items-center justify-center h-[80dvh]">
-            <Loader size="lg" />
-            <p>'hhhhhh'</p>
-          </div>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <div className="flex-1  grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
