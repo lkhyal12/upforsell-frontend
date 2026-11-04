@@ -1,9 +1,14 @@
 import { ShoppingCart } from "lucide-react";
-import React from "react";
 import { Link } from "react-router-dom";
+import useCart from "../store/useCartStore";
+import useAuthStore from "../store/useAuthStore";
 
 const ProductCard = ({ product }) => {
   const { image, title, originalPrice, price, productId } = product;
+  const { user } = useAuthStore();
+  const userId = user?._id;
+  const { cart, addToCart } = useCart();
+  // console.log(cart);
   return (
     <div className="w-full  rounded-md shadow-md bg-gray-50 flex flex-col gap-3 px-1 py-2">
       <Link
@@ -25,7 +30,10 @@ const ProductCard = ({ product }) => {
           </h4>
         )}
       </div>
-      <button className="bg-emerald-600 w-full rounded-lg text-white font-semibold mx-auto py-2 cursor-pointer flex items-center justify-center gap-2">
+      <button
+        onClick={() => addToCart({ productId: product.id, userId })}
+        className="bg-emerald-600 w-full rounded-lg text-white font-semibold mx-auto py-2 cursor-pointer flex items-center justify-center gap-2"
+      >
         <ShoppingCart size={18} /> Add To Cart
       </button>
     </div>

@@ -28,7 +28,7 @@ const Browse = () => {
               price: product.price,
               originalPrice:
                 product.price / (1 - product.discountPercentage / 100),
-              productId: product.id,
+              id: product.id,
             })),
           );
         } catch (err) {

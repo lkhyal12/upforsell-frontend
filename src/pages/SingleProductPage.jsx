@@ -17,14 +17,12 @@ const SingleProductPage = () => {
       else setQuantity((prev) => prev - 1);
     } else setQuantity((prev) => prev + 1);
   }
-  console.log(product);
   useEffect(() => {
     fetchSingleProduct(id);
   }, [id, fetchSingleProduct]);
 
   useEffect(() => {
     if (product) setSeelectedImage(product.images[0]);
-    console.log("changed");
   }, [product]);
 
   if (loading)

@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
 import Loader from "../components/Loader";
+import useCart from "../store/useCartStore";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,10 @@ const LoginPage = () => {
     if (password.length < 6)
       return toast.error("Password must be at lease 6 chars long");
 
-    login({ email, password });
+    const { success } = await login({ email, password });
+    if (success) {
+      useCart.getState().getCart();
+    }
   }
   if (user) return <Navigate to="/" />;
   return (

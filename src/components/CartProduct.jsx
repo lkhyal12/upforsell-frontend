@@ -1,7 +1,7 @@
 import { ShoppingCart, Trash } from "lucide-react";
 import React, { useState } from "react";
 
-const CartProduct = ({ product }) => {
+const CartProduct = ({ product, isSlider }) => {
   const [quantity, setQuantity] = useState(1);
 
   function handleQuantity(sign) {
@@ -13,11 +13,17 @@ const CartProduct = ({ product }) => {
 
   async function handleDelete() {}
   return (
-    <div className="flex w-9/10 mx-auto py-3 h-fit  border-b border-gray-300 items-center justify-between">
+    <div
+      className={`flex ${isSlider ? "w-full" : "w-9/10"} mx-auto py-3 h-fit  border-b border-gray-300 items-center justify-between`}
+    >
       {/* left side */}
       <div className="flex items-center gap-3">
         <div className="bg-gray-200 rounded-md">
-          <img className="w-40" src={product.image} alt={product.title} />
+          <img
+            className={`${isSlider ? "w-30" : "w-40"}`}
+            src={product.image}
+            alt={product.title}
+          />
         </div>
         <div className="flex flex-col gap-2">
           <h3 className="text-lg font-semibold">{product.title}</h3>
@@ -51,18 +57,18 @@ const CartProduct = ({ product }) => {
 
           {/* quantity */}
           <div>
-            <div className="flex items-center border border-gray-300 py-1 px-3 rounded-md">
+            <div className="flex items-center border border-gray-300  rounded-md justify-between w-fit">
               <button
-                onClick={() => handleQuantity("-")}
+                className="px-2 font-bold text-lg cursor-pointer border-r border-gray-300 py-1 disabled:opacity-50 disabled:pointer-events-none"
                 disabled={quantity <= 1}
-                className="font-bold cursor-pointer text-lg border-r border-gray-300 pr-3 disabled:opacity-50 disabled:pointer-events-none"
+                onClick={() => handleQuantity("-")}
               >
                 -
               </button>
-              <span className="px-2 text-lg font-semibold">{quantity}</span>
+              <span className="px-3 font-semibold">{quantity}</span>
               <button
+                className="px-2 font-bold text-lg cursor-pointer border-l border-gray-300 py-1"
                 onClick={() => handleQuantity("+")}
-                className="font-bold cursor-pointer text-lg border-l border-gray-300 pl-3"
               >
                 +
               </button>

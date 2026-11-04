@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getErrorMsg } from "../lib/utils";
+import { generateGuestId, getErrorMsg } from "../lib/utils";
 import toast from "react-hot-toast";
 import api from "../lib/axios";
 
@@ -11,6 +11,7 @@ const useAuthStore = create((set) => ({
   accessToken: null,
   // sign up function
   signUp: async ({ name, email, password }) => {
+    const guestId = generateGuestId();
     set({ loading: true });
     try {
       const response = await api.post(
@@ -19,6 +20,7 @@ const useAuthStore = create((set) => ({
           name,
           email,
           password,
+          guestId,
         },
       );
 
@@ -29,19 +31,28 @@ const useAuthStore = create((set) => ({
         isAdmin: response.data.user.role === "admin",
         accessToken: response.data.accessToken,
       });
+
+      return { success: true };
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       toast.error(errorMsg);
       console.log(errorMsg);
       set({ error: errorMsg, loading: false });
+
+      return { success: false };
     }
   },
 
   //   login
   login: async ({ email, password }) => {
     set({ loading: true });
+    const guestId = generateGuestId();
     try {
-      const { data } = await api.post("/auth/login", { email, password });
+      const { data } = await api.post("/auth/login", {
+        email,
+        password,
+        guestId,
+      });
 
       set({
         user: data.user,
@@ -49,11 +60,15 @@ const useAuthStore = create((set) => ({
         error: null,
         loading: false,
       });
+
+      return { success: true };
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       toast.error(errorMsg);
       console.log(errorMsg);
       set({ error: errorMsg, loading: false });
+
+      return { success: false };
     }
   },
   //   logout function

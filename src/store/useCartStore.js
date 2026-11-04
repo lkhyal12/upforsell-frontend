@@ -1,22 +1,32 @@
 import { create } from "zustand";
 import api from "../lib/axios";
-import { getErrorMsg } from "../lib/utils";
+import { generateGuestId, getErrorMsg } from "../lib/utils";
 import toast from "react-hot-toast";
 
 const useCart = create((set) => ({
   cart: [],
   loading: false,
   error: null,
-
-  addToCart: async ({ productId, guestId, userId }) => {
+  total: 0,
+  addToCart: async ({ productId, userId, color, size }) => {
+    const guestId = userId ? null : generateGuestId();
+    console.log({ guestId });
     set({ loading: true });
+    console.log({ productId });
     try {
       const response = await api.post("/cart", {
         productId,
         guestId,
         userId,
+        color: color ?? "standard",
+        size: size ?? "standard",
       });
-      set({ cart: response.data.cart });
+      const { cart } = response.data;
+      console.log(cart);
+      const total = cart.cartItems.reduce((ac, product) => {
+        return ac + product.price * product.quantity;
+      });
+      set({ cart, total });
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       console.log(errorMsg);
@@ -26,11 +36,16 @@ const useCart = create((set) => ({
     }
   },
   //   get cart
-  getCart: async ({ userId, guestId }) => {
+  getCart: async ({ userId }) => {
     set({ loading: true });
+    const guestId = generateGuestId();
     try {
       const response = await api.get("/cart", { guestId, userId });
-      set({ cart: response.data.cart });
+      const { cart } = response.data;
+      const total = cart.cartItems.reduce((ac, product) => {
+        return ac + product.price * product.quantity;
+      }, 0);
+      set({ cart, total });
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       console.log(errorMsg);
@@ -40,16 +55,32 @@ const useCart = create((set) => ({
     }
   },
   //   dremove from cart
-  removeFromCart: async ({ productId, guestId, userId }) => {
+  removeFromCart: async ({ productId, userId }) => {
+    const guestId = generateGuestId();
     try {
       const response = await api.delete(`/cart/${productId}`, {
         userId,
         guestId,
       });
-      set({ cart: response.data.cart });
+
+      const { cart } = response.data;
+      const total = cart.cartItems.reduce((ac, product) => {
+        return ac + product.price * product.quantity;
+      });
+      set({ cart, total });
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       set({ error: errorMsg });
+    }
+  },
+  clearCart: async () => {
+    const guestId = generateGuestId();
+    try {
+      await api.delete(`/cart/clear`, { guestId });
+      set({ total: 0, cart: [] });
+    } catch (err) {
+      const errMsg = getErrorMsg(err);
+      toast.error(errMsg);
     }
   },
 }));

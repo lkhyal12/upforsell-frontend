@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import useAuthStore from "../store/useAuthStore";
+import useCart from "../store/useCartStore";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +30,11 @@ const SignUp = () => {
       return toast.error("Password must be at least 6 charcters long");
     if (password !== confirmPassword)
       return toast.error("Passwords do not match");
-    signUp(formData);
+
+    const { success } = await signUp(formData);
+    if (success) {
+      useCart.getState().getCart();
+    }
   }
 
   if (user) return <Navigate to="/" />;

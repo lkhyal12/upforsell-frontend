@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/logo.png";
 import useAuthStore from "../store/useAuthStore";
+import CartSideBar from "./CartSideBar";
 const Navbar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -51,7 +52,7 @@ function DeskTopNav() {
             {" "}
             Home
           </Link>
-          <Link to="/products" className="font-medium">
+          <Link to="/shop" className="font-medium">
             {" "}
             Browse
           </Link>
@@ -127,16 +128,8 @@ function DeskTopNav() {
         </div>
       )}
 
-      <div
-        className={`fixed top-0 bottom-0 right-0 w-1/3 duration-300 transform bg-white ${isCartOpen ? "translate-x-0" : "translate-x-full"} shadow-md`}
-      >
-        <button
-          className="absolute top-2 right-2"
-          onClick={() => setIsCartOpen(false)}
-        >
-          <X />
-        </button>
-      </div>
+      {/* cart side bar */}
+      <CartSideBar isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
     </nav>
   );
 }
