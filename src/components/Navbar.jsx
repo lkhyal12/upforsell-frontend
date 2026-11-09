@@ -1,4 +1,13 @@
-import { Search, SearchIcon, ShoppingCart, User, X } from "lucide-react";
+import {
+  LogOut,
+  Menu,
+  Search,
+  SearchIcon,
+  ShoppingBag,
+  ShoppingCart,
+  User,
+  X,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/logo.png";
@@ -150,19 +159,45 @@ function DeskTopNav({ isCartOpen, setIsCartOpen }) {
 }
 
 function MobileNav({ setIsCartOpen, isCartOpen }) {
-  const [isSearchBarOpen, setIsSearchBarOpen] = useState(true);
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const { user, logout } = useAuthStore();
   const searchInputRef = useRef();
-
+  const drawerRef = useRef();
+  const menuBtnRef = useRef();
   const navigate = useNavigate();
-  console.log({ isCartOpen });
+
+  useEffect(() => {
+    function handleClickOutisde(e) {
+      if (
+        drawerRef.current &&
+        !drawerRef.current.contains(e.target) &&
+        !menuBtnRef.current?.contains(e.target)
+      )
+        setIsMobileNavOpen(false);
+    }
+    window.addEventListener("click", handleClickOutisde);
+
+    return () => window.removeEventListener("click", handleClickOutisde);
+  }, []);
   return (
     <div className=" relative w-9/10 mx-auto">
       <div className="w-full flex items-center justify-between">
+        {/* menu btn */}
+        <button
+          ref={menuBtnRef}
+          className="flex-1"
+          onClick={() => setIsMobileNavOpen(true)}
+        >
+          <Menu size={20} />
+        </button>
+
+        {/* logo */}
         <div>
-          <img className="w-15" src={logoImg} alt="" />
+          <img className="w-15 mr-10" src={logoImg} alt="" />
         </div>
 
-        <div className="flex items-center gap-5 text-gray-700">
+        <div className="flex-1 flex items-center justify-end gap-5 text-gray-700">
           <button
             className="cursor-pointer"
             onClick={() => setIsSearchBarOpen(true)}
@@ -174,7 +209,6 @@ function MobileNav({ setIsCartOpen, isCartOpen }) {
             className="cursor-pointer"
             onClick={() => {
               setIsCartOpen(true);
-              console.log("hhhh");
             }}
           >
             <ShoppingCart />
@@ -207,6 +241,50 @@ function MobileNav({ setIsCartOpen, isCartOpen }) {
           </div>
         </div>
       )}
+
+      {/* mobile nav bar menu */}
+      <div
+        ref={drawerRef}
+        className={`fixed top-0 left-0 bottom-0 w-9/10 max-w-2xl bg-white transform ${isMobileNavOpen ? "translate-x-0" : "-translate-x-full"} duration-300 shadow-sm `}
+      >
+        <button
+          onClick={() => setIsMobileNavOpen(false)}
+          className="absolute top-2 right-2 cursor-pointer"
+        >
+          <X size={20} className="text-gray-500" />
+        </button>
+
+        <div className="links flex flex-col gap-10 pt-[10%] pl-[10%] h-full">
+          <div className="mb-10 flex items-center justify-center">
+            <h2 className="font-bold text-2xl flex items-center gap-1">
+              <ShoppingBag size={30} className="text-emerald-600" /> UpForSell
+            </h2>
+          </div>
+          <Link to="/" className="font-semibold">
+            HOME
+          </Link>
+          <Link to="/shop" className="font-semibold">
+            BROWSE
+          </Link>
+          <Link to="/about" className="font-semibold">
+            ABOUT
+          </Link>
+          <Link to="/about" className="font-semibold">
+            CONTACT
+          </Link>
+          <Link to="/profile" className="font-semibold">
+            ACCOUNT
+          </Link>
+          {user && (
+            <div className="flex-1 flex flex-col justify-end pb-2">
+              <button className="bg-emerald-200 w-9/10 max-w-xl mx-auto rounded-md cursor-pointer text-emerald-900 py-2  flex items-center justify-center gap-5 font-bold">
+                <LogOut size={25} />
+                Log Out
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
