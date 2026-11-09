@@ -26,7 +26,7 @@ const CartPage = () => {
   useEffect(() => {
     getCart();
   }, [getCart, cart]);
-
+  if (loading) return <h1>loaidng...</h1>;
   return (
     <div className="min-h-[90dvh] w-9/10 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-5">
@@ -35,11 +35,22 @@ const CartPage = () => {
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
             Your Cart
           </h1>
-          <h5 className="font-semibold text-gray-500">3 Items in your cart</h5>
+          <h5 className="font-semibold text-gray-500">
+            {cart.cartItems?.length} item{`(s)`} in your cart
+          </h5>
           {/* cart products */}
           <div className="w-full rounded-md shadow bg-white  mt-5 space-y-5">
-            {cartProducts.map((product) => (
-              <CartProduct key={product.id} product={product} />
+            {cart.cartItems?.map((item) => (
+              <CartProduct
+                key={item.dummyProduct.id}
+                product={{
+                  title: item.dummyProduct.title,
+                  id: item.dummyProduct.id,
+                  color: item.color,
+                  price: item.dummyProduct.price,
+                  image: item.dummyProduct.images[0],
+                }}
+              />
             ))}
           </div>
         </div>
@@ -49,7 +60,7 @@ const CartPage = () => {
           <h2 className="text-xl md:text-2xl font-bold">Order Summary</h2>
           <div className="flex items-center justify-between mt-4">
             <p className="text-gray-500 font-semibold text-sm">
-              Subtotal (3 items)
+              Subtotal ({cart.cartItems?.length} item{`(s)`})
             </p>
             <span className="font-bold text-lg">
               ${cartProducts.reduce((a, e) => a + e.price, 0).toFixed(2)}
@@ -92,7 +103,7 @@ const CartPage = () => {
         </div>
       </div>
 
-      <button className="text-gray-500 flex items-center justify-center gap-2 cursor-pointer">
+      <button className="mt-5 text-gray-500 flex items-center justify-center gap-2 cursor-pointer">
         <Trash size={20} /> Clear Cart
       </button>
 

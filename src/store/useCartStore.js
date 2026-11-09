@@ -10,9 +10,8 @@ const useCart = create((set) => ({
   total: 0,
   addToCart: async ({ productId, userId, color, size }) => {
     const guestId = userId ? null : generateGuestId();
-    console.log({ guestId });
     set({ loading: true });
-    console.log({ productId });
+
     try {
       const response = await api.post("/cart", {
         productId,
@@ -22,11 +21,11 @@ const useCart = create((set) => ({
         size: size ?? "standard",
       });
       const { cart } = response.data;
-      console.log(cart);
-      const total = cart.cartItems.reduce((ac, product) => {
-        return ac + product.price * product.quantity;
-      });
+      const total = cart.cartItems.reduce((ac, item) => {
+        return ac + item.dummyProduct.price * item.quantity;
+      }, 0);
       set({ cart, total });
+      toast.success("Product added to cart");
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       console.log(errorMsg);
@@ -40,10 +39,10 @@ const useCart = create((set) => ({
     set({ loading: true });
     const guestId = generateGuestId();
     try {
-      const response = await api.get("/cart", { guestId, userId });
+      const response = await api.get("/cart", { params: { guestId, userId } });
       const { cart } = response.data;
-      const total = cart.cartItems.reduce((ac, product) => {
-        return ac + product.price * product.quantity;
+      const total = cart.cartItems.reduce((ac, item) => {
+        return ac + item.dummyProduct.price * item.quantity;
       }, 0);
       set({ cart, total });
     } catch (err) {
@@ -59,18 +58,45 @@ const useCart = create((set) => ({
     const guestId = generateGuestId();
     try {
       const response = await api.delete(`/cart/${productId}`, {
-        userId,
-        guestId,
+        data: {
+          userId,
+          guestId,
+          color: "standard",
+          size: "standard",
+          productId,
+        },
       });
 
       const { cart } = response.data;
-      const total = cart.cartItems.reduce((ac, product) => {
-        return ac + product.price * product.quantity;
-      });
+
+      const total = cart.cartItems.reduce((ac, item) => {
+        return ac + item.dummyProduct.price * item.quantity;
+      }, 0);
       set({ cart, total });
+      toast.success("Product removed from cart");
     } catch (err) {
       const errorMsg = getErrorMsg(err);
+      console.log({ errorMsg });
       set({ error: errorMsg });
+    }
+  },
+  // update quantity
+  updateQuantity: async ({ quantity, productId, userId }) => {
+    const guestId = generateGuestId();
+    try {
+      const response = await api.put(`/cart/${productId}`, {
+        quantity,
+        guestId,
+        userId,
+      });
+      const { cart } = response.data;
+      const total = cart.cartItems.reduce((ac, item) => {
+        return ac + item.dummyProduct.price * item.quantity;
+      }, 0);
+      set({ cart, total });
+    } catch (err) {
+      const errMsg = getErrorMsg(err);
+      console.log(errMsg);
     }
   },
   clearCart: async () => {

@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Browse from "./pages/Browse";
 import SingleProductPage from "./pages/SingleProductPage";
 import CartPage from "./pages/CartPage";
+import AboutPage from "./pages/AboutPage";
 
 const App = () => {
   return (
@@ -25,6 +26,8 @@ const App = () => {
           <Route path="/shop" element={<Browse />} />
           <Route path="/products/:id" element={<SingleProductPage />} />
           <Route path="/cart" element={<CartPage />} />
+
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
       </div>
 

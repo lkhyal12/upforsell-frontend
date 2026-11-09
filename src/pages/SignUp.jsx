@@ -34,6 +34,7 @@ const SignUp = () => {
     const { success } = await signUp(formData);
     if (success) {
       useCart.getState().getCart();
+      localStorage.removeItem("guestId");
     }
   }
 

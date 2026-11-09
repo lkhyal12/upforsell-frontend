@@ -1,8 +1,6 @@
-import React from "react";
 import HeroSection from "../sections/HeroSection";
 import BestSellersSection from "../sections/BestSellersSection";
 import {
-  ArrowLeft,
   ArrowRight,
   Headphones,
   RotateCcw,

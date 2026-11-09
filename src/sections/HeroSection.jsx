@@ -6,8 +6,10 @@ import {
   Truck,
 } from "lucide-react";
 import heroImg from "../assets/heroImage.png";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col md:flex-row items-center w-9/10 m-auto mt-10">
       {/* left side */}
@@ -24,7 +26,10 @@ const HeroSection = () => {
           Discover high-quality products, great deals, and everything you need -
           all in one place
         </p>
-        <button className="bg-emerald-600 text-white flex gap-1 items-center rounded-full py-2 px-6 font-semibold mt-5 cursor-pointer hover:bg-emerald-500">
+        <button
+          onClick={() => navigate("/shop")}
+          className="bg-emerald-600 text-white flex gap-1 items-center rounded-full py-2 px-6 font-semibold mt-5 cursor-pointer hover:bg-emerald-500"
+        >
           Shop now <ArrowRight size={18} />
         </button>
 

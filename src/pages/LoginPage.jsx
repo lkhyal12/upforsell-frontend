@@ -20,6 +20,7 @@ const LoginPage = () => {
     const { success } = await login({ email, password });
     if (success) {
       useCart.getState().getCart();
+      localStorage.removeItem("guestId");
     }
   }
   if (user) return <Navigate to="/" />;

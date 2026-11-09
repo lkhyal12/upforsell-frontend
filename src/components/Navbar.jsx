@@ -1,12 +1,14 @@
-import { Search, ShoppingCart, X } from "lucide-react";
+import { Search, SearchIcon, ShoppingCart, User, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/logo.png";
 import useAuthStore from "../store/useAuthStore";
 import CartSideBar from "./CartSideBar";
+import useCart from "../store/useCartStore";
+import { generateGuestId } from "../lib/utils";
 const Navbar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  const [isCartOpen, setIsCartOpen] = useState(false);
   useEffect(() => {
     function handleResize() {
       setWindowWidth(window.innerWidth);
@@ -17,17 +19,23 @@ const Navbar = () => {
 
   return (
     <div className="">
-      {windowWidth >= 1024 ? <DeskTopNav /> : <MobileNav />}
+      {windowWidth >= 1024 ? (
+        <DeskTopNav isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+      ) : (
+        <MobileNav isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+      )}
+      <CartSideBar isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
     </div>
   );
 };
 
 // desktop navbar
-function DeskTopNav() {
+function DeskTopNav({ isCartOpen, setIsCartOpen }) {
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const { user, loading, isAdmin } = useAuthStore();
-  const cart = [1];
+  const { user, loading, isAdmin, getProfile } = useAuthStore();
+  console.log({ user });
+  const { cart, getCart } = useCart();
+  console.log({ cart });
   const searchInputRef = useRef();
   const navigate = useNavigate();
 
@@ -41,6 +49,14 @@ function DeskTopNav() {
 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    getProfile();
+  }, [getProfile]);
+  useEffect(() => {
+    const guestId = generateGuestId();
+    if (guestId || user) getCart({ userId: user?._id || null });
+  }, [getCart, user]);
   return (
     <nav className="relative  flex items-center w-full justify-between px-1 py-1 md:px-4">
       <div className="leftSide flex items-center  gap-15  grow">
@@ -76,7 +92,7 @@ function DeskTopNav() {
         >
           <ShoppingCart />
           <span className="text-white bg-orange-500 rounded-full size-5 flex items-center justify-center text-xs absolute -top-2 -right-3">
-            {cart.length}
+            {cart.cartItems?.length || 0}
           </span>
         </button>
         <button
@@ -129,15 +145,68 @@ function DeskTopNav() {
       )}
 
       {/* cart side bar */}
-      <CartSideBar isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
     </nav>
   );
 }
 
-function MobileNav() {
+function MobileNav({ setIsCartOpen, isCartOpen }) {
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(true);
+  const searchInputRef = useRef();
+
+  const navigate = useNavigate();
+  console.log({ isCartOpen });
   return (
-    <div className="">
-      <h1>Mobile NnavBar</h1>
+    <div className=" relative w-9/10 mx-auto">
+      <div className="w-full flex items-center justify-between">
+        <div>
+          <img className="w-15" src={logoImg} alt="" />
+        </div>
+
+        <div className="flex items-center gap-5 text-gray-700">
+          <button
+            className="cursor-pointer"
+            onClick={() => setIsSearchBarOpen(true)}
+          >
+            <SearchIcon />
+          </button>
+
+          <button
+            className="cursor-pointer"
+            onClick={() => {
+              setIsCartOpen(true);
+              console.log("hhhh");
+            }}
+          >
+            <ShoppingCart />
+          </button>
+
+          <button
+            className="cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            <User />
+          </button>
+        </div>
+      </div>
+      {isSearchBarOpen && (
+        <div className="absolute  inset-0 bg-white flex items-center justify-center">
+          <div>
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search..."
+              className="w-60 border border-gray-200 bg-gray-300 rounded-lg py-1 px-2 outline-none "
+            />
+
+            <button
+              className="absolute top-4 -right-3 cursor-pointer"
+              onClick={() => setIsSearchBarOpen(false)}
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
