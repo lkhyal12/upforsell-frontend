@@ -3,6 +3,7 @@ import bagImage from "../assets/bag.png";
 import CartProduct from "./CartProduct";
 import useCart from "../store/useCartStore";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 const cartProducts = [
   {
     title: "Perfect handbag",
@@ -42,13 +43,15 @@ const CartSideBar = ({ isCartOpen, setIsCartOpen }) => {
     setIsCartOpen(false);
     navigate("/shop");
   }
-  if (loading) return <h1>Loading...</h1>;
+
   return (
     <div
       className={`fixed top-0 bottom-0 right-0 w-full md:w-2/3 md:max-w-xl duration-300 transform bg-white ${isCartOpen ? "translate-x-0" : "translate-x-full"} pb-10 shadow-md z-50 min-h-dvh flex flex-col justify-between`}
     >
       {loading ? (
-        <h1>Loading...</h1>
+        <div className="size-full flex items-center justify-center">
+          <Loader size="md" />
+        </div>
       ) : (
         <div className="flex-1 overflow-y-scroll">
           {!cart.cartItems || cart.cartItems.length === 0 ? (

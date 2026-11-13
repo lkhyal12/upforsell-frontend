@@ -1,7 +1,7 @@
 import { ArrowBigRight, ArrowRight, Lock, Mail } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
 import Loader from "../components/Loader";
 import useCart from "../store/useCartStore";
@@ -9,7 +9,9 @@ import useCart from "../store/useCartStore";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loading, user } = useAuthStore();
+  const { login, loading, user, isCheckingAuth, getProfile } = useAuthStore();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo");
   async function handleSubmit(e) {
     e.preventDefault();
     if (!email?.trim()) return toast.error("Email is required");
@@ -17,13 +19,17 @@ const LoginPage = () => {
     if (password.length < 6)
       return toast.error("Password must be at lease 6 chars long");
 
-    const { success } = await login({ email, password });
+    const { success, userId } = await login({ email, password });
     if (success) {
-      useCart.getState().getCart();
+      await useCart.getState().getCart({ userId });
       localStorage.removeItem("guestId");
     }
   }
-  if (user) return <Navigate to="/" />;
+  useEffect(() => {
+    if (isCheckingAuth) getProfile();
+  }, [isCheckingAuth, getProfile]);
+  if (isCheckingAuth) return <Loader size="lg" />;
+  if (user) return <Navigate to={redirectTo || "/"} />;
   return (
     <div className="h-[90dvh] flex items-center justify-center px-1">
       <div className="w-xl max-w-full rounded-md shadow bg-white p-5 ">

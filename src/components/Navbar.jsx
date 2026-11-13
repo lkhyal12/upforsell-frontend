@@ -41,7 +41,7 @@ const Navbar = () => {
 // desktop navbar
 function DeskTopNav({ isCartOpen, setIsCartOpen }) {
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
-  const { user, loading, isAdmin, getProfile } = useAuthStore();
+  const { user, loading, isAdmin, getProfile, logout } = useAuthStore();
   console.log({ user });
   const { cart, getCart } = useCart();
   console.log({ cart });
@@ -110,13 +110,28 @@ function DeskTopNav({ isCartOpen, setIsCartOpen }) {
         >
           <Search size={18} />
         </button>
+
+        {user && (
+          <button
+            className=" bg-gray-50 p-2 rounded-full cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
+            <User size={20} />
+          </button>
+        )}
         {!user && (
-          <button className="px-5 py-1 rounded-xl border border-black/50 cursor-pointer font-medium">
+          <button
+            onClick={() => navigate("/login")}
+            className="px-5 py-1 rounded-xl border border-black/50 cursor-pointer font-medium"
+          >
             Log In
           </button>
         )}
         {!user && (
-          <button className="px-5 py-1 rounded-xl border border-emerald-500 cursor-pointer bg-emerald-600 text-white font-medium">
+          <button
+            onClick={() => navigate("/sign-up")}
+            className="px-5 py-1 rounded-xl border border-emerald-500 cursor-pointer bg-emerald-600 text-white font-medium"
+          >
             Sign Up
           </button>
         )}
@@ -127,7 +142,10 @@ function DeskTopNav({ isCartOpen, setIsCartOpen }) {
           </button>
         )}
         {user && (
-          <button className="px-5 py-1 rounded-xl border border-red-500 cursor-pointer bg-red-600 text-white font-medium">
+          <button
+            onClick={() => logout()}
+            className="px-5 py-1 rounded-xl border border-red-500 cursor-pointer bg-red-600 text-white font-medium"
+          >
             Log Out
           </button>
         )}
@@ -260,19 +278,39 @@ function MobileNav({ setIsCartOpen, isCartOpen }) {
               <ShoppingBag size={30} className="text-emerald-600" /> UpForSell
             </h2>
           </div>
-          <Link to="/" className="font-semibold">
+          <Link
+            to="/"
+            className="font-semibold"
+            onClick={() => setIsMobileNavOpen(false)}
+          >
             HOME
           </Link>
-          <Link to="/shop" className="font-semibold">
+          <Link
+            to="/shop"
+            className="font-semibold"
+            onClick={() => setIsMobileNavOpen(false)}
+          >
             BROWSE
           </Link>
-          <Link to="/about" className="font-semibold">
+          <Link
+            to="/about"
+            className="font-semibold"
+            onClick={() => setIsMobileNavOpen(false)}
+          >
             ABOUT
           </Link>
-          <Link to="/about" className="font-semibold">
+          <Link
+            to="/about"
+            className="font-semibold"
+            onClick={() => setIsMobileNavOpen(false)}
+          >
             CONTACT
           </Link>
-          <Link to="/profile" className="font-semibold">
+          <Link
+            to="/profile"
+            className="font-semibold"
+            onClick={() => setIsMobileNavOpen(false)}
+          >
             ACCOUNT
           </Link>
           {user && (

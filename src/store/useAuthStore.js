@@ -9,6 +9,7 @@ const useAuthStore = create((set) => ({
   user: null,
   isAdmin: false,
   accessToken: null,
+  isCheckingAuth: true,
   // sign up function
   signUp: async ({ name, email, password }) => {
     const guestId = generateGuestId();
@@ -61,7 +62,7 @@ const useAuthStore = create((set) => ({
         loading: false,
       });
 
-      return { success: true };
+      return { success: true, userId: data.user._id };
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       toast.error(errorMsg);
@@ -87,13 +88,17 @@ const useAuthStore = create((set) => ({
 
   //   get profile
   getProfile: async () => {
+    set({ isCheckingAuth: true, error: null });
     try {
       const { data } = await api.get("/auth/profile");
+      console.log({ data });
       set({ user: data.user, isAdmin: data.user.role === "admin" });
     } catch (err) {
       const errorMsg = getErrorMsg(err);
       toast.error(errorMsg);
-      set({ error: errorMsg });
+      set({ error: errorMsg, user: null, isAdmin: null });
+    } finally {
+      set({ isCheckingAuth: false });
     }
   },
 }));

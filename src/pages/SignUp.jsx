@@ -1,5 +1,5 @@
 import { ArrowRight, Lock, Mail, User } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -13,7 +13,7 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
-  const { user, loading, signUp } = useAuthStore();
+  const { user, loading, signUp, isChekingAuth, getProfile } = useAuthStore();
   // handle formData change
   function handleFormDataChange(e) {
     setFormData((prev) => ({
@@ -38,6 +38,11 @@ const SignUp = () => {
     }
   }
 
+  useEffect(() => {
+    if (isChekingAuth) getProfile();
+  }, [isChekingAuth, getProfile]);
+
+  if (isChekingAuth) return <Loader size="lg" />;
   if (user) return <Navigate to="/" />;
   return (
     <div className="h-[90dvh] flex items-center justify-center px-1">
